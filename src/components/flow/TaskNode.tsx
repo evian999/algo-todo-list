@@ -1,7 +1,7 @@
 "use client";
 
 import { Handle, Position, type NodeProps } from "@xyflow/react";
-import { CheckCircle2, Circle, Trash2 } from "lucide-react";
+import { Check, Trash2 } from "lucide-react";
 import type { Task } from "@/lib/types";
 import { INBOX_FOLDER_KEY, taskFolderKey } from "@/lib/types";
 import { useAppStore } from "@/lib/store";
@@ -39,8 +39,15 @@ export function TaskNode({ data, selected }: NodeProps) {
         className="!h-2.5 !w-2.5 !border !border-[var(--accent)] !bg-[var(--bg-deep)]"
       />
       <div className="flex items-start gap-2">
-        <span className="mt-0.5 text-[var(--accent)]" title={done ? "已完成" : "未完成"}>
-          {done ? <CheckCircle2 className="h-4 w-4" /> : <Circle className="h-4 w-4" />}
+        <span
+          className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-colors ${
+            done
+              ? "border-[var(--accent)] bg-[var(--accent)]/15 text-[var(--accent)]"
+              : "border-zinc-500/80 bg-transparent"
+          }`}
+          title={done ? "已完成" : "未完成"}
+        >
+          {done ? <Check className="h-2.5 w-2.5" strokeWidth={3} /> : null}
         </span>
         <div className="min-w-0 flex-1">
           <p className="mb-1 text-[10px] text-zinc-600">{folderName}</p>

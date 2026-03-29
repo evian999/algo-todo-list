@@ -20,6 +20,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { FolderLaneNode } from "@/components/flow/FolderLaneNode";
 import { GroupFrameNode } from "@/components/flow/GroupFrameNode";
 import { TaskNode } from "@/components/flow/TaskNode";
+import { separateOverlappingTaskNodes } from "@/lib/canvas-overlap";
 import {
   buildFlowEdges,
   buildFlowNodes,
@@ -103,9 +104,11 @@ function CanvasInner() {
 
   const onNodeDragStop = useCallback(
     (_: React.MouseEvent, _node: Node) => {
-      syncCanvasLayout(getNodes());
+      const resolved = separateOverlappingTaskNodes(getNodes());
+      setNodes(resolved);
+      syncCanvasLayout(resolved);
     },
-    [getNodes, syncCanvasLayout],
+    [getNodes, setNodes, syncCanvasLayout],
   );
 
   const onPaneClick = useCallback(
@@ -184,7 +187,7 @@ function CanvasInner() {
           建组（多选 ≥2）
         </button>
         <span className="text-[10px] text-zinc-600">
-          连点空白添加任务 · 选中文件夹后拖边角调大小
+          连点空白添加 · 选中连线后 Delete 取消连接 · 拖任务自动错开重叠 · 文件夹拖边角调大小
         </span>
       </div>
       <ReactFlow
@@ -196,6 +199,7 @@ function CanvasInner() {
         onNodeDragStop={onNodeDragStop}
         onPaneClick={onPaneClick}
         nodeTypes={nodeTypes}
+        deleteKeyCode={["Backspace", "Delete"]}
         fitView
         minZoom={0.15}
         maxZoom={1.5}
