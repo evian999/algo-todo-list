@@ -183,7 +183,9 @@ function CanvasInner() {
         >
           建组（多选 ≥2）
         </button>
-        <span className="text-[10px] text-zinc-600">快速连点画布空白添加</span>
+        <span className="text-[10px] text-zinc-600">
+          连点空白添加任务 · 选中文件夹后拖边角调大小
+        </span>
       </div>
       <ReactFlow
         nodes={nodes}

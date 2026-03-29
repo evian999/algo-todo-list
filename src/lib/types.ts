@@ -57,7 +57,7 @@ export type AppData = {
 };
 
 export function defaultInboxRect(): Rect {
-  return { x: 40, y: 40, w: 400, h: 1200 };
+  return { x: 40, y: 40, w: 320, h: 420 };
 }
 
 export function emptyAppData(): AppData {

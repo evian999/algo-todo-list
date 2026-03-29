@@ -16,6 +16,10 @@ import {
   emptyAppData,
   taskFolderKey,
 } from "./types";
+import {
+  mergeFolderRectsWithTaskBounds,
+  readFlowNodeSize,
+} from "@/lib/folder-fit";
 import { parseAppData } from "@/lib/validate";
 
 const SAVE_MS = 400;
@@ -178,9 +182,17 @@ export const useAppStore = create<AppState>((set, get) => ({
           y: fr.y + 56 + Math.floor(sameFolder.length / 4) * 88,
         };
       }
+      const tasksNext = [t, ...s.tasks];
+      const folderRects = mergeFolderRectsWithTaskBounds(
+        s.layout.folderRects,
+        tasksNext,
+        s.groups,
+        positions,
+        s.layout.groupRects,
+      );
       return {
-        tasks: [t, ...s.tasks],
-        layout: { ...s.layout, positions },
+        tasks: tasksNext,
+        layout: { ...s.layout, positions, folderRects },
       };
     });
     get().scheduleSave();
@@ -391,10 +403,18 @@ export const useAppStore = create<AppState>((set, get) => ({
       groups = [...groups, { id: gid, name: name?.trim() || "任务组", taskIds: valid }];
       groupRects[gid] = rect;
 
+      const folderRects = mergeFolderRectsWithTaskBounds(
+        s.layout.folderRects,
+        tasksNormalized,
+        groups,
+        s.layout.positions,
+        groupRects,
+      );
+
       return {
         tasks: tasksNormalized,
         groups,
-        layout: { ...s.layout, groupRects },
+        layout: { ...s.layout, groupRects, folderRects },
       };
     });
     get().scheduleSave();
@@ -442,7 +462,13 @@ export const useAppStore = create<AppState>((set, get) => ({
           if (key && folderRects[key]) {
             const abs = absolutePosition(n);
             const r = folderRects[key];
-            folderRects[key] = { ...r, x: abs.x, y: abs.y };
+            const sz = readFlowNodeSize(n);
+            folderRects[key] = {
+              x: abs.x,
+              y: abs.y,
+              w: sz?.w ?? r.w,
+              h: sz?.h ?? r.h,
+            };
           }
         }
       }
@@ -464,7 +490,22 @@ export const useAppStore = create<AppState>((set, get) => ({
         }
       }
 
-      return { layout: { ...s.layout, positions, groupRects, folderRects } };
+      const mergedFolders = mergeFolderRectsWithTaskBounds(
+        folderRects,
+        s.tasks,
+        s.groups,
+        positions,
+        groupRects,
+      );
+
+      return {
+        layout: {
+          ...s.layout,
+          positions,
+          groupRects,
+          folderRects: mergedFolders,
+        },
+      };
     });
     get().scheduleSave();
   },
@@ -475,7 +516,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const id = newId();
       const col = s.folders.length + 1;
       const folderRects = { ...s.layout.folderRects };
-      folderRects[id] = { x: 40 + col * 420, y: 40, w: 360, h: 1200 };
+      folderRects[id] = { x: 40 + col * 420, y: 40, w: 320, h: 420 };
       const f: Folder = { id, name: trimmed };
       return {
         folders: [...s.folders, f],
