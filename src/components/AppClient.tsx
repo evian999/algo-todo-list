@@ -1,7 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { LayoutGrid, List, LogOut } from "lucide-react";
+import Link from "next/link";
+import { LayoutGrid, List, LogOut, Settings } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ListMode } from "@/components/ListMode";
 import { useAppStore } from "@/lib/store";
@@ -110,6 +111,14 @@ export function AppClient() {
           <span className="hidden text-[10px] text-zinc-600 lg:inline">
             L 列表 · C 画布
           </span>
+          <Link
+            href="/settings"
+            className="flex items-center gap-1 rounded-md border border-zinc-700/60 px-2.5 py-1.5 text-xs text-zinc-400 hover:border-[var(--accent)]/40 hover:text-zinc-200"
+            title="设置与数据备份"
+          >
+            <Settings className="h-3.5 w-3.5" />
+            <span className="hidden sm:inline">设置</span>
+          </Link>
           <button
             type="button"
             disabled={logoutLoading}

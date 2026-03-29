@@ -66,6 +66,8 @@ type AppState = AppData & {
   setTaskFolder: (taskId: string, folderId: string | undefined) => void;
   toggleTaskTag: (taskId: string, tagId: string) => void;
   clearSaveError: () => void;
+  /** 用备份 JSON 解析结果整体替换本地状态并触发保存 */
+  replaceAppData: (data: AppData) => void;
 };
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
@@ -90,6 +92,21 @@ export const useAppStore = create<AppState>((set, get) => ({
   setNavTagId: (id) => set({ navTagId: id }),
 
   clearSaveError: () => set({ saveError: null }),
+
+  replaceAppData: (data) => {
+    set({
+      tasks: data.tasks,
+      edges: data.edges,
+      groups: data.groups,
+      folders: data.folders,
+      tags: data.tags,
+      layout: data.layout,
+      navFolderId: "all",
+      navTagId: null,
+      saveError: null,
+    });
+    get().scheduleSave();
+  },
 
   hydrate: async () => {
     try {
