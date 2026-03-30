@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.100.1",
     "@upstash/redis": "^1.37.0",
     "@xyflow/react": "^12.8.2",
     "jose": "^6.2.2",

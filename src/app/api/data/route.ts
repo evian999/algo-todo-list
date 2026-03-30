@@ -2,13 +2,18 @@ import { mkdir, readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
+import { getMemoryStore, setMemoryStore } from "@/lib/memory-store";
 import {
   isRedisConfigured,
   loadFromRedis,
   saveToRedis,
 } from "@/lib/redis-store";
-import { getMemoryStore, setMemoryStore } from "@/lib/memory-store";
 import { COOKIE, verifySessionToken } from "@/lib/session";
+import { isSupabaseConfigured } from "@/lib/supabase/admin";
+import {
+  loadAppDataFromSupabase,
+  saveAppDataToSupabase,
+} from "@/lib/supabase/app-data";
 import { parseAppData } from "@/lib/validate";
 
 const STORE_LEGACY = join(process.cwd(), "data", "store.json");
@@ -35,6 +40,23 @@ export async function GET() {
   }
 
   try {
+    if (isSupabaseConfigured()) {
+      try {
+        const data = await loadAppDataFromSupabase(userId);
+        setMemoryStore(data);
+        return NextResponse.json(data);
+      } catch (e) {
+        console.error("[api/data] Supabase load failed:", e);
+        return NextResponse.json(
+          {
+            error:
+              "从数据库加载失败，请检查 Supabase 配置与 SQL 迁移是否已执行",
+          },
+          { status: 503 },
+        );
+      }
+    }
+
     if (isRedisConfigured()) {
       const fromRedis = await loadFromRedis(userId);
       if (fromRedis) {
@@ -79,7 +101,17 @@ export async function PATCH(request: Request) {
     const data = parseAppData(body);
     setMemoryStore(data);
 
-    if (isRedisConfigured()) {
+    if (isSupabaseConfigured()) {
+      try {
+        await saveAppDataToSupabase(userId, data);
+      } catch (e) {
+        console.error("[api/data] Supabase save failed:", e);
+        return NextResponse.json(
+          { ok: false, error: "持久化失败（请检查 Supabase 与数据库函数）" },
+          { status: 503 },
+        );
+      }
+    } else if (isRedisConfigured()) {
       try {
         await saveToRedis(userId, data);
       } catch (e) {
@@ -99,7 +131,7 @@ export async function PATCH(request: Request) {
         "utf-8",
       );
     } catch {
-      /* Vercel 等环境无持久磁盘，依赖 Redis */
+      /* Vercel 等环境无持久磁盘 */
     }
 
     return NextResponse.json({ ok: true });
