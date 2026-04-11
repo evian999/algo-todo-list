@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Taskpath — 列表与画布双模式任务",
+  title: "Flex-Off — 列表与画布双模式任务",
   description: "列表与节点画布双模式，跟踪任务与依赖直到完成",
 };
 
@@ -32,7 +32,7 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem("taskpath-theme")||localStorage.getItem("algo-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem("flex-off-theme")||localStorage.getItem("taskpath-theme")||localStorage.getItem("algo-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}})();`,
           }}
         />
       </head>

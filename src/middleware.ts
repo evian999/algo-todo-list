@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
-import { COOKIE } from "@/lib/session";
+import { readSessionCookieValue } from "@/lib/session";
 
 function secretKey() {
   return new TextEncoder().encode(
@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get(COOKIE)?.value;
+  const token = readSessionCookieValue((name) => request.cookies.get(name));
   if (!token) {
     if (pathname.startsWith("/api/")) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

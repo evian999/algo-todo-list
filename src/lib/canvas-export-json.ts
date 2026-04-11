@@ -48,8 +48,8 @@ function taskBox(
   };
 }
 
-export type TaskPathCanvasExportV1 = {
-  format: "taskpath-canvas-v1";
+export type FlexOffCanvasExportV1 = {
+  format: "flex-off-canvas-v1";
   exportedAt: string;
   navFolderId: NavFolderId;
   folderLanes: Array<{
@@ -92,7 +92,7 @@ export type TaskPathCanvasExportV1 = {
  * 导出当前画布任务流布局（拓扑 + 绝对坐标 + 文件夹区域尺寸）。
  * `flowTaskNodes` 传入时可用 React Flow 实测节点宽高优化连线端点。
  */
-export function buildTaskPathCanvasJson(opts: {
+export function buildFlexOffCanvasJson(opts: {
   tasks: Task[];
   edges: TodoEdge[];
   groups: TaskGroup[];
@@ -100,7 +100,7 @@ export function buildTaskPathCanvasJson(opts: {
   folders: Folder[];
   navFolderId: NavFolderId;
   flowTaskNodes?: Node[];
-}): TaskPathCanvasExportV1 {
+}): FlexOffCanvasExportV1 {
   const sizes: Record<string, { w: number; h: number }> = {};
   for (const n of opts.flowTaskNodes ?? []) {
     if (n.type !== "task") continue;
@@ -180,7 +180,7 @@ export function buildTaskPathCanvasJson(opts: {
   });
 
   return {
-    format: "taskpath-canvas-v1",
+    format: "flex-off-canvas-v1",
     exportedAt: new Date().toISOString(),
     navFolderId: opts.navFolderId,
     folderLanes,

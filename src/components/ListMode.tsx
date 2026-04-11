@@ -96,9 +96,9 @@ export function ListMode() {
     [completedOpen, triggerTaskFlash],
   );
 
-  /** 列表序号与「下一任务」均按创建时间从早到晚 */
-  const oldFirst = (a: Task, b: Task) =>
-    new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+  /** 创建时间倒序：新任务在上；序号与「下一任务」均按当前列表自上而下 */
+  const newFirst = (a: Task, b: Task) =>
+    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
 
   const filtered = useMemo(() => {
     let list = [...tasks];
@@ -130,12 +130,12 @@ export function ListMode() {
   }, [tasks, navFolderId, navTagId, listSearchQuery, tags]);
 
   const incompleteTasks = useMemo(
-    () => filtered.filter((t) => !t.completedAt).sort(oldFirst),
+    () => filtered.filter((t) => !t.completedAt).sort(newFirst),
     [filtered],
   );
 
   const completedTasks = useMemo(
-    () => filtered.filter((t) => Boolean(t.completedAt)).sort(oldFirst),
+    () => filtered.filter((t) => Boolean(t.completedAt)).sort(newFirst),
     [filtered],
   );
 
@@ -178,7 +178,7 @@ export function ListMode() {
     >
       <span
         className="mt-0.5 w-7 shrink-0 text-right tabular-nums md-type-body-s text-md-on-surface-variant sm:mt-1"
-        title="按创建时间排序的序号"
+        title="列表序号（自上而下；新任务在上）"
       >
         {serial}.
       </span>

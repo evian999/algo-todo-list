@@ -42,7 +42,7 @@ import {
   filterEdgesForTasks,
   visibleTaskIdSet,
 } from "@/lib/flow-build";
-import { buildTaskPathCanvasJson } from "@/lib/canvas-export-json";
+import { buildFlexOffCanvasJson } from "@/lib/canvas-export-json";
 import {
   TASK_NODE_BOUNDS_H,
   TASK_NODE_BOUNDS_W,
@@ -187,10 +187,10 @@ function CanvasInner() {
 
   const { screenToFlowPosition, getNodes, fitView } = useReactFlow();
 
-  const onExportTaskPathJson = useCallback(() => {
+  const onExportFlexOffJson = useCallback(() => {
     const { tasks, edges, groups, layout, folders, navFolderId } =
       useAppStore.getState();
-    const payload = buildTaskPathCanvasJson({
+    const payload = buildFlexOffCanvasJson({
       tasks,
       edges,
       groups,
@@ -205,7 +205,7 @@ function CanvasInner() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `taskpath-export-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
+    a.download = `flex-off-export-${new Date().toISOString().replace(/[:.]/g, "-")}.json`;
     a.click();
     URL.revokeObjectURL(url);
   }, [getNodes]);
@@ -431,7 +431,7 @@ function CanvasInner() {
             type="button"
             title="导出任务流布局 JSON（连线端点、任务与组位置、文件夹尺寸）"
             className="md-btn-tonal md-focus-ring inline-flex shrink-0 items-center justify-center px-2 py-1.5 hover:border-md-primary/50 hover:text-md-on-surface"
-            onClick={onExportTaskPathJson}
+            onClick={onExportFlexOffJson}
           >
             <Download className="h-3.5 w-3.5" />
           </button>

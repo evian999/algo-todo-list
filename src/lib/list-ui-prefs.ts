@@ -1,4 +1,5 @@
-const STORAGE_KEY = "taskpath-list-ui";
+const STORAGE_KEY = "flex-off-list-ui";
+const STORAGE_KEY_LEGACY = "taskpath-list-ui";
 
 export type ListUiPrefs = {
   sidebarCollapsed: boolean;
@@ -11,7 +12,8 @@ export const defaultListUiPrefs: ListUiPrefs = {
 export function readListUiPrefs(): ListUiPrefs {
   if (typeof window === "undefined") return { ...defaultListUiPrefs };
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    let raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) raw = localStorage.getItem(STORAGE_KEY_LEGACY);
     if (!raw) return { ...defaultListUiPrefs };
     const p = JSON.parse(raw) as Partial<ListUiPrefs> & {
       wideLayout?: boolean;
@@ -28,6 +30,7 @@ export function readListUiPrefs(): ListUiPrefs {
 export function writeListUiPrefs(prefs: ListUiPrefs) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(prefs));
+    localStorage.removeItem(STORAGE_KEY_LEGACY);
   } catch {
     /* ignore */
   }

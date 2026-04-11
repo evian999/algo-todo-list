@@ -26,7 +26,7 @@ function buildExportPayload(s: {
   preferences: AppData["preferences"];
 }) {
   return {
-    _taskpathBackup: 1,
+    _flexOffBackup: 1,
     exportedAt: new Date().toISOString(),
     folders: s.folders,
     tags: s.tags,
@@ -94,7 +94,7 @@ export function SettingsClient() {
     const d = new Date();
     const stamp = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     a.href = URL.createObjectURL(blob);
-    a.download = `taskpath-backup-${stamp}.json`;
+    a.download = `flex-off-backup-${stamp}.json`;
     a.click();
     URL.revokeObjectURL(a.href);
   }, [tasks, edges, groups, folders, tags, layout, preferences]);
@@ -127,7 +127,7 @@ export function SettingsClient() {
           Object.keys(data.layout.positions).length > 0;
         if (!hasAny && keys.length > 0) {
           setParseError(
-            "未识别到任务、文件夹或标签等有效字段，请检查文件是否为 Taskpath（或旧版 Algo Todo）导出格式",
+            "未识别到任务、文件夹或标签等有效字段，请检查文件是否为 Flex-Off（或旧版 Taskpath / Algo Todo）导出格式",
           );
           return;
         }

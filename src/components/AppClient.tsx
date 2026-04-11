@@ -78,7 +78,7 @@ export function AppClient() {
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-[var(--md-sys-color-outline)] bg-[var(--md-sys-color-surface-container)]/90 px-4 backdrop-blur-md">
         <div className="flex min-w-0 items-center gap-2">
           <span className="md-type-body-m font-semibold tracking-tight text-md-on-surface">
-            Taskpath
+            Flex-Off
           </span>
           <span className="hidden md-type-body-s sm:inline">
             算法工程师任务流

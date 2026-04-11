@@ -8,7 +8,7 @@ import {
   isRedisConfigured,
   saveToRedis,
 } from "@/lib/redis-store";
-import { COOKIE, verifySessionToken } from "@/lib/session";
+import { readSessionCookieValue, verifySessionToken } from "@/lib/session";
 import { isSupabaseConfigured } from "@/lib/supabase/admin";
 import { saveAppDataToSupabase } from "@/lib/supabase/app-data";
 import { parseAppData } from "@/lib/validate";
@@ -18,7 +18,8 @@ function userStorePath(userId: string) {
 }
 
 async function getUserId(): Promise<string | null> {
-  const token = (await cookies()).get(COOKIE)?.value;
+  const jar = await cookies();
+  const token = readSessionCookieValue((name) => jar.get(name));
   if (!token) return null;
   try {
     const { sub } = await verifySessionToken(token);

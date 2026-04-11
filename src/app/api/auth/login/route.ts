@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { COOKIE, signSession } from "@/lib/session";
+import { COOKIE, COOKIE_LEGACY, signSession } from "@/lib/session";
 import { verifyCredentials } from "@/lib/users";
 
 export async function POST(request: Request) {
@@ -22,6 +22,11 @@ export async function POST(request: Request) {
       sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
+    });
+    res.cookies.set(COOKIE_LEGACY, "", {
+      httpOnly: true,
+      path: "/",
+      maxAge: 0,
     });
     return res;
   } catch {

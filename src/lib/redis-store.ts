@@ -15,16 +15,19 @@ export function isRedisConfigured(): boolean {
   );
 }
 
-const REDIS_PREFIX = "taskpath:v1:";
+const REDIS_PREFIX = "flex-off:v1:";
+const REDIS_PREFIX_TASKPATH = "taskpath:v1:";
 const REDIS_PREFIX_LEGACY = "algo-todo:v1:";
 
 const key = (userId: string) => `${REDIS_PREFIX}${userId}`;
+const taskpathKey = (userId: string) => `${REDIS_PREFIX_TASKPATH}${userId}`;
 const legacyKey = (userId: string) => `${REDIS_PREFIX_LEGACY}${userId}`;
 
 export async function loadFromRedis(userId: string): Promise<AppData | null> {
   const r = client();
   if (!r) return null;
   let raw = await r.get(key(userId));
+  if (raw == null) raw = await r.get(taskpathKey(userId));
   if (raw == null) raw = await r.get(legacyKey(userId));
   if (raw == null) return null;
   const str = typeof raw === "string" ? raw : JSON.stringify(raw);
@@ -38,6 +41,7 @@ export async function saveToRedis(userId: string, data: AppData): Promise<void> 
   await r.set(key(userId), payload);
   try {
     await r.del(legacyKey(userId));
+    await r.del(taskpathKey(userId));
   } catch {
     /* ignore */
   }

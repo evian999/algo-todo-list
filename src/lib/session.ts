@@ -1,6 +1,13 @@
 import { SignJWT, jwtVerify } from "jose";
 
-const COOKIE = "taskpath-token";
+export const COOKIE = "flex-off-token";
+export const COOKIE_LEGACY = "taskpath-token";
+
+export function readSessionCookieValue(
+  get: (name: string) => { value: string } | undefined,
+): string | undefined {
+  return get(COOKIE)?.value ?? get(COOKIE_LEGACY)?.value;
+}
 
 function getSecretKey() {
   return new TextEncoder().encode(
@@ -21,4 +28,3 @@ export async function verifySessionToken(token: string) {
   return payload as { sub: string; name: string };
 }
 
-export { COOKIE };

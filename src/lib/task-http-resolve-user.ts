@@ -17,6 +17,7 @@ function redisClient(): Redis | null {
 }
 
 const REDIS_SCAN_PREFIXES: { match: string; strip: string }[] = [
+  { match: "flex-off:v1:*", strip: "flex-off:v1:" },
   { match: "taskpath:v1:*", strip: "taskpath:v1:" },
   { match: "algo-todo:v1:*", strip: "algo-todo:v1:" },
 ];
