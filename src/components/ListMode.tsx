@@ -424,9 +424,10 @@ export function ListMode() {
                 />
               </div>
             ) : null}
-            <label className="inline-flex cursor-pointer items-center gap-1.5">
+            <div className="inline-flex items-center gap-1.5">
               <input
                 type="checkbox"
+                id={`list-sr-cb-${task.id}`}
                 className="h-3.5 w-3.5 accent-md-primary"
                 checked={task.spacedRepetitionEnabled === true}
                 onChange={(e) =>
@@ -435,8 +436,13 @@ export function ListMode() {
                   })
                 }
               />
-              <span className="text-md-on-surface-variant">间隔重复</span>
-            </label>
+              <label
+                htmlFor={`list-sr-cb-${task.id}`}
+                className="cursor-pointer select-none text-md-on-surface-variant"
+              >
+                遗忘曲线重复
+              </label>
+            </div>
           </div>
         ) : null}
         <div className="mt-2 flex min-w-0 flex-col gap-2 md:flex-row md:flex-nowrap md:items-center md:gap-0">

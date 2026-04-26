@@ -34,7 +34,7 @@ export type Task = {
   /** 放弃时间（ISO）；与 completedAt 互斥展示，同属「已处理」类任务 */
   abandonedAt?: string;
   abandonReason?: string;
-  /** 遗忘曲线 / 间隔重复（仅占位开关，后续可接提醒逻辑） */
+  /** 遗忘曲线重复：复习节奏占位开关（如后续接提醒 / 与 GGCode 类工具对齐），见列表项旁说明 */
   spacedRepetitionEnabled?: boolean;
   result?: string;
   /** 未设置表示收件箱 */
